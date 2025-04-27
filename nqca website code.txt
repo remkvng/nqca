@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student Report Card - NEW QUALITY CREATION ACADEMY</title>
+<script src="https://cdn.tailwindcss.com/3.4.16"></script>
+<script>tailwind.config={theme:{extend:{colors:{primary:'#1e40af',secondary:'#3b82f6'},borderRadius:{'none':'0px','sm':'4px',DEFAULT:'8px','md':'12px','lg':'16px','xl':'20px','2xl':'24px','3xl':'32px','full':'9999px','button':'8px'}}}}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet">
+<style>
+:where([class^="ri-"])::before { content: "\f3c2"; }
+body {
+font-family: 'Poppins', sans-serif;
+}
+.report-card {
+font-family: 'Lora', serif;
+}
+.editable:focus {
+outline: 1px dashed #3b82f6;
+min-width: 50px;
+}
+.editable[contenteditable="true"]:empty:before {
+content: attr(data-placeholder);
+color: #9ca3af;
+font-style: italic;
+}
+@media print {
+.no-print {
+display: none !important;
+}
+body {
+background-color: white !important;
+}
+.print-area {
+margin: 0;
+padding: 0;
+}
+.print-container {
+box-shadow: none !important;
+border: none !important;
+}
+.report-card {
+page-break-inside: avoid;
+}
+}
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+-webkit-appearance: none;
+margin: 0;
+}
+input[type="number"] {
+-moz-appearance: textfield;
+}
+.custom-checkbox {
+position: relative;
+cursor: pointer;
+}
+.custom-checkbox input {
+position: absolute;
+opacity: 0;
+cursor: pointer;
+}
+.checkmark {
+position: absolute;
+top: 0;
+left: 0;
+height: 20px;
+width: 20px;
+background-color: #fff;
+border: 2px solid #3b82f6;
+border-radius: 4px;
+}
+.custom-checkbox input:checked ~ .checkmark:after {
+content: "";
+position: absolute;
+display: block;
+left: 6px;
+top: 2px;
+width: 5px;
+height: 10px;
+border: solid #3b82f6;
+border-width: 0 2px 2px 0;
+transform: rotate(45deg);
+}
+</style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+<div class="no-print bg-primary text-white shadow-md">
+<div class="container mx-auto px-4 py-3 flex items-center justify-between">
+<div class="flex items-center">
+<div class="w-10 h-10 flex items-center justify-center mr-2">
+<i class="ri-graduation-cap-fill ri-2x"></i>
+</div>
+<h1 class="text-xl font-semibold">Student Report Card System</h1>
+</div>
+<div class="flex items-center space-x-4">
+<button id="settingsBtn" class="flex items-center px-4 py-2 bg-blue-700 hover:bg-blue-800 text-white rounded-button whitespace-nowrap">
+<div class="w-5 h-5 flex items-center justify-center mr-1">
+<i class="ri-settings-3-line"></i>
+</div>
+Settings
+</button>
+<button id="saveBtn" class="flex items-center px-4 py-2 bg-primary hover:bg-blue-800 text-white rounded-button whitespace-nowrap">
+<div class="w-5 h-5 flex items-center justify-center mr-1">
+<i class="ri-save-line"></i>
+</div>
+Save Changes
+</button>
+<button id="printBtn" class="flex items-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-button whitespace-nowrap">
+<div class="w-5 h-5 flex items-center justify-center mr-1">
+<i class="ri-printer-line"></i>
+</div>
+Print Report Card
+</button>
+</div>
+</div>
+</div>
+<div class="container mx-auto px-4 py-6">
+<div class="no-print mb-6 flex flex-wrap items-center justify-between gap-4">
+<div class="flex flex-wrap items-center gap-4">
+<button id="addSubjectBtn" class="flex items-center px-4 py-2 bg-primary hover:bg-blue-800 text-white rounded-button whitespace-nowrap">
+<div class="w-5 h-5 flex items-center justify-center mr-1">
+<i class="ri-add-line"></i>
+</div>
+Add Subject
+</button>
+<button id="resetBtn" class="flex items-center px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-button whitespace-nowrap">
+<div class="w-5 h-5 flex items-center justify-center mr-1">
+<i class="ri-refresh-line"></i>
+</div>
+Reset Form
+</button>
+</div>
+<div class="flex items-center space-x-4">
+<div class="flex items-center">
+<label class="custom-checkbox mr-2">
+<input type="checkbox" id="autoCalculate" checked>
+<span class="checkmark"></span>
+</label>
+<span class="ml-6">Auto Calculate Grades</span>
+</div>
+<div class="relative">
+<select id="termSelect" class="appearance-none bg-white border border-gray-300 rounded-button py-2 pl-4 pr-10 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary">
+<option value="First Term">First Term</option>
+<option value="Second Term">Second Term</option>
+<option value="Third Term">Third Term</option>
+</select>
+<div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+<div class="w-5 h-5 flex items-center justify-center">
+<i class="ri-arrow-down-s-line"></i>
+</div>
+</div>
+</div>
+<div class="relative">
+<select id="academicYearSelect" class="appearance-none bg-white border border-gray-300 rounded-button py-2 pl-4 pr-10 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary">
+<option value="2024/2025">2024/2025</option>
+<option value="2025/2026">2025/2026</option>
+<option value="2026/2027">2026/2027</option>
+</select>
+<div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+<div class="w-5 h-5 flex items-center justify-center">
+<i class="ri-arrow-down-s-line"></i>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="settingsModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center hidden no-print">
+<div class="bg-white rounded-md p-6 w-full max-w-2xl">
+<div class="flex justify-between items-center mb-4">
+<h2 class="text-xl font-semibold">Report Card Settings</h2>
+<button id="closeSettingsBtn" class="text-gray-500 hover:text-gray-700">
+<div class="w-6 h-6 flex items-center justify-center">
+<i class="ri-close-line ri-lg"></i>
+</div>
+</button>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div>
+<h3 class="font-medium mb-2">School Information</h3>
+<div class="space-y-3">
+<div>
+<label class="block text-sm font-medium text-gray-700 mb-1">School Name</label>
+<input type="text" id="schoolNameInput" value="NEW QUALITY CREATION ACADEMY" class="w-full px-3 py-2 border border-gray-300 rounded-button focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary">
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-700 mb-1">School Motto</label>
+<input type="text" id="schoolMottoInput" value="QUALITY EDUCATION WITH CHRISTIAN CONTEXT" class="w-full px-3 py-2 border border-gray-300 rounded-button focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary">
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-700 mb-1">School Logo</label>
+<div class="flex items-center">
+<input type="file" id="schoolLogoInput" accept="image/*" class="hidden">
+<button id="uploadLogoBtn" class="px-3 py-2 bg-gray-200 hover:bg-gray-300 rounded-button whitespace-nowrap">
+<div class="w-4 h-4 flex items-center justify-center mr-1 inline-block">
+<i class="ri-upload-2-line"></i>
+</div>
+Upload Logo
+</button>
+<span id="logoFileName" class="ml-2 text-sm text-gray-500">No file chosen</span>
+</div>
+</div>
+</div>
+</div>
+<div>
+<h3 class="font-medium mb-2">Grading System</h3>
+<div class="space-y-3">
+<div class="grid grid-cols-3 gap-2">
+<div>
+<label class="block text-sm font-medium text-gray-700 mb-1">A Grade</label>
+<input type="number" id="gradeAInput" value="80" min="0" max="100" class="w-full px-3 py-2 border border-gray-300 rounded-button focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary">
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-700 mb-1">B Grade</label>
+<input type="number" id="gradeBInput" value="70" min="0" max="100" class="w-full px-3 py-2 border border-gray-300 rounded-button focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary">
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-700 mb-1">C Grade</label>
+<input type="number" id="gradeCInput" value="60" min="0" max="100" class="w-full px-3 py-2 border border-gray-300 rounded-button focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary">
+</div>
+</div>
+<div class="grid grid-cols-3 gap-2">
+<div>
+<label class="block text-sm font-medium text-gray-700 mb-1">D Grade</label>
+<input type="number" id="gradeDInput" value="50" min="0" max="100" class="w-full px-3 py-2 border border-gray-300 rounded-button focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary">
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-700 mb-1">E Grade</label>
+<input type="number" id="gradeEInput" value="40" min="0" max="100" class="w-full px-3 py-2 border border-gray-300 rounded-button focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary">
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-700 mb-1">F Grade</label>
+<input type="number" id="gradeFInput" value="0" min="0" max="100" class="w-full px-3 py-2 border border-gray-300 rounded-button focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary">
+</div>
+</div>
+</div>
+<h3 class="font-medium mb-2 mt-4">Background Color</h3>
+<div class="flex items-center space-x-3">
+<div class="w-6 h-6 bg-blue-50 border border-gray-300 rounded cursor-pointer" data-color="bg-blue-50"></div>
+<div class="w-6 h-6 bg-green-50 border border-gray-300 rounded cursor-pointer" data-color="bg-green-50"></div>
+<div class="w-6 h-6 bg-yellow-50 border border-gray-300 rounded cursor-pointer" data-color="bg-yellow-50"></div>
+<div class="w-6 h-6 bg-purple-50 border border-gray-300 rounded cursor-pointer" data-color="bg-purple-50"></div>
+<div class="w-6 h-6 bg-white border border-gray-300 rounded cursor-pointer" data-color="bg-white"></div>
+</div>
+</div>
+</div>
+<div class="mt-6 flex justify-end">
+<button id="saveSettingsBtn" class="px-4 py-2 bg-primary hover:bg-blue-800 text-white rounded-button whitespace-nowrap">
+Save Settings
+</button>
+</div>
+</div>
+</div>
+<div class="print-area">
+<div id="reportCardContainer" class="print-container bg-white rounded-lg shadow-lg overflow-hidden p-6 mb-10">
+<div class="report-card">
+<!-- Header Section -->
+<div class="flex flex-col items-center mb-6 pb-4 border-b border-gray-200">
+<div class="flex items-center mb-4">
+<div id="schoolLogo" class="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mr-6 border border-gray-200">
+<div class="w-12 h-12 flex items-center justify-center text-primary">
+<i class="ri-building-4-line ri-2x"></i>
+</div>
+</div>
+<div class="text-center">
+<h1 id="schoolName" class="text-3xl font-bold text-primary mb-2 editable" contenteditable="true" data-placeholder="School Name">NEW QUALITY CREATION ACADEMY</h1>
+<p id="schoolMotto" class="text-lg italic text-gray-600 editable" contenteditable="true" data-placeholder="School Motto">QUALITY EDUCATION WITH CHRISTIAN CONTEXT</p>
+</div>
+</div>
+<div class="w-full max-w-3xl">
+<h2 class="text-2xl font-bold text-center text-gray-800 mb-2">STUDENT'S REPORT CARD</h2>
+<div class="flex flex-wrap justify-between items-center">
+<div class="text-sm text-gray-600">
+<span id="termDisplay">First Term</span> -
+<span id="academicYearDisplay">2024/2025</span> Academic Session
+</div>
+<div class="text-sm text-gray-600">
+Date: <span id="currentDate" class="editable" contenteditable="true" data-placeholder="Date">April 23, 2025</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Student Information Section -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+<div class="space-y-3">
+<div class="flex">
+<div class="w-40 font-semibold">Student Name:</div>
+<div class="flex-1 editable" contenteditable="true" data-placeholder="Student Name">Elizabeth Adeyemi</div>
+</div>
+<div class="flex">
+<div class="w-40 font-semibold">Class:</div>
+<div class="flex-1 editable" contenteditable="true" data-placeholder="Class">JSS 2A</div>
+</div>
+<div class="flex">
+<div class="w-40 font-semibold">Admission No:</div>
+<div class="flex-1 editable" contenteditable="true" data-placeholder="Admission Number">NQCA/2023/0127</div>
+</div>
+</div>
+<div class="space-y-3">
+<div class="flex">
+<div class="w-40 font-semibold">Gender:</div>
+<div class="flex-1 editable" contenteditable="true" data-placeholder="Gender">Female</div>
+</div>
+<div class="flex">
+<div class="w-40 font-semibold">Age:</div>
+<div class="flex-1 editable" contenteditable="true" data-placeholder="Age">13 years</div>
+</div>
+<div class="flex">
+<div class="w-40 font-semibold">No. in Class:</div>
+<div class="flex-1 editable" contenteditable="true" data-placeholder="Number in Class">27</div>
+</div>
+</div>
+</div>
+<!-- Academic Performance Section -->
+<div class="mb-8">
+<h3 class="text-xl font-semibold mb-3">Academic Performance</h3>
+<div class="overflow-x-auto">
+<table class="w-full border-collapse">
+<thead>
+<tr class="bg-gray-100">
+<th class="border border-gray-300 px-4 py-2 text-left">Subject</th>
+<th class="border border-gray-300 px-4 py-2 text-center w-20">CA<br>(40%)</th>
+<th class="border border-gray-300 px-4 py-2 text-center w-20">Exam<br>(60%)</th>
+<th class="border border-gray-300 px-4 py-2 text-center w-20">Total<br>(100%)</th>
+<th class="border border-gray-300 px-4 py-2 text-center w-16">Grade</th>
+<th class="border border-gray-300 px-4 py-2 text-left">Remarks</th>
+</tr>
+</thead>
+<tbody id="subjectsTableBody">
+<tr>
+<td class="border border-gray-300 px-4 py-2">
+<div class="editable" contenteditable="true" data-placeholder="Subject">Mathematics</div>
+</td>
+<td class="border border-gray-300 px-4 py-2">
+<input type="number" class="ca-score w-full text-center bg-transparent" min="0" max="40" value="32">
+</td>
+<td class="border border-gray-300 px-4 py-2">
+<input type="number" class="exam-score w-full text-center bg-transparent" min="0" max="60" value="48">
+</td>
+<td class="border border-gray-300 px-4 py-2 text-center total-score">80</td>
+<td class="border border-gray-300 px-4 py-2 text-center grade">A</td>
+<td class="border border-gray-300 px-4 py-2">
+<div class="editable" contenteditable="true" data-placeholder="Remarks">Excellent</div>
+</td>
+</tr>
+<tr>
+<td class="border border-gray-300 px-4 py-2">
+<div class="editable" contenteditable="true" data-placeholder="Subject">English Language</div>
+</td>
+<td class="border border-gray-300 px-4 py-2">
+<input type="number" class="ca-score w-full text-center bg-transparent" min="0" max="40" value="35">
+</td>
+<td class="border border-gray-300 px-4 py-2">
+<input type="number" class="exam-score w-full text-center bg-transparent" min="0" max="60" value="52">
+</td>
+<td class="border border-gray-300 px-4 py-2 text-center total-score">87</td>
+<td class="border border-gray-300 px-4 py-2 text-center grade">A</td>
+<td class="border border-gray-300 px-4 py-2">
+<div class="editable" contenteditable="true" data-placeholder="Remarks">Excellent</div>
+</td>
+</tr>
+<tr>
+<td class="border border-gray-300 px-4 py-2">
+<div class="editable" contenteditable="true" data-placeholder="Subject">Basic Science</div>
+</td>
+<td class="border border-gray-300 px-4 py-2">
+<input type="number" class="ca-score w-full text-center bg-transparent" min="0" max="40" value="28">
+</td>
+<td class="border border-gray-300 px-4 py-2">
+<input type="number" class="exam-score w-full text-center bg-transparent" min="0" max="60" value="45">
+</td>
+<td class="border border-gray-300 px-4 py-2 text-center total-score">73</td>
+<td class="border border-gray-300 px-4 py-2 text-center grade">B</td>
+<td class="border border-gray-300 px-4 py-2">
+<div class="editable" contenteditable="true" data-placeholder="Remarks">Very Good</div>
+</td>
+</tr>
+<tr>
+<td class="border border-gray-300 px-4 py-2">
+<div class="editable" contenteditable="true" data-placeholder="Subject">Social Studies</div>
+</td>
+<td class="border border-gray-300 px-4 py-2">
+<input type="number" class="ca-score w-full text-center bg-transparent" min="0" max="40" value="30">
+</td>
+<td class="border border-gray-300 px-4 py-2">
+<input type="number" class="exam-score w-full text-center bg-transparent" min="0" max="60" value="42">
+</td>
+<td class="border border-gray-300 px-4 py-2 text-center total-score">72</td>
+<td class="border border-gray-300 px-4 py-2 text-center grade">B</td>
+<td class="border border-gray-300 px-4 py-2">
+<div class="editable" contenteditable="true" data-placeholder="Remarks">Very Good</div>
+</td>
+</tr>
+<tr>
+<td class="border border-gray-300 px-4 py-2">
+<div class="editable" contenteditable="true" data-placeholder="Subject">Christian Religious Studies</div>
+</td>
+<td class="border border-gray-300 px-4 py-2">
+<input type="number" class="ca-score w-full text-center bg-transparent" min="0" max="40" value="38">
+</td>
+<td class="border border-gray-300 px-4 py-2">
+<input type="number" class="exam-score w-full text-center bg-transparent" min="0" max="60" value="55">
+</td>
+<td class="border border-gray-300 px-4 py-2 text-center total-score">93</td>
+<td class="border border-gray-300 px-4 py-2 text-center grade">A</td>
+<td class="border border-gray-300 px-4 py-2">
+<div class="editable" contenteditable="true" data-placeholder="Remarks">Excellent</div>
+</td>
+</tr>
+<tr>
+<td class="border border-gray-300 px-4 py-2">
+<div class="editable" contenteditable="true" data-placeholder="Subject">Business Studies</div>
+</td>
+<td class="border border-gray-300 px-4 py-2">
+<input type="number" class="ca-score w-full text-center bg-transparent" min="0" max="40" value="25">
+</td>
+<td class="border border-gray-300 px-4 py-2">
+<input type="number" class="exam-score w-full text-center bg-transparent" min="0" max="60" value="38">
+</td>
+<td class="border border-gray-300 px-4 py-2 text-center total-score">63</td>
+<td class="border border-gray-300 px-4 py-2 text-center grade">C</td>
+<td class="border border-gray-300 px-4 py-2">
+<div class="editable" contenteditable="true" data-placeholder="Remarks">Good</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- Summary Section -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+<div class="col-span-2">
+<h3 class="text-xl font-semibold mb-3">Performance Summary</h3>
+<table class="w-full border-collapse">
+<tr>
+<td class="border border-gray-300 px-4 py-2 font-medium">Total Subjects:</td>
+<td class="border border-gray-300 px-4 py-2" id="totalSubjects">6</td>
+</tr>
+<tr>
+<td class="border border-gray-300 px-4 py-2 font-medium">Total Score:</td>
+<td class="border border-gray-300 px-4 py-2" id="totalScore">468</td>
+</tr>
+<tr>
+<td class="border border-gray-300 px-4 py-2 font-medium">Class Position:</td>
+<td class="border border-gray-300 px-4 py-2">
+<div class="editable" contenteditable="true" data-placeholder="Position">3rd</div>
+</td>
+</tr>
+<tr>
+<td class="border border-gray-300 px-4 py-2 font-medium">Promoted to:</td>
+<td class="border border-gray-300 px-4 py-2">
+<div class="editable" contenteditable="true" data-placeholder="Next Class">JSS 3A</div>
+</td>
+</tr>
+</table>
+</div>
+<div>
+<h3 class="text-xl font-semibold mb-3">Attendance Record</h3>
+<table class="w-full border-collapse">
+<tr>
+<td class="border border-gray-300 px-4 py-2 font-medium">School Days:</td>
+<td class="border border-gray-300 px-4 py-2">
+<div class="editable" contenteditable="true" data-placeholder="School Days">65</div>
+</td>
+</tr>
+<tr>
+<td class="border border-gray-300 px-4 py-2 font-medium">Days Present:</td>
+<td class="border border-gray-300 px-4 py-2">
+<div class="editable" contenteditable="true" data-placeholder="Days Present">62</div>
+</td>
+</tr>
+<tr>
+<td class="border border-gray-300 px-4 py-2 font-medium">Days Absent:</td>
+<td class="border border-gray-300 px-4 py-2">
+<div class="editable" contenteditable="true" data-placeholder="Days Absent">3</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<!-- Comments Section -->
+<div class="mb-8">
+<div class="grid grid-cols-1 gap-4">
+<div>
+<h3 class="text-lg font-semibold mb-2">Class Teacher's Comment:</h3>
+<div class="border border-gray-300 p-3 rounded min-h-16">
+<div class="editable" contenteditable="true" data-placeholder="Class Teacher's Comment">Elizabeth is a diligent student who consistently demonstrates a strong work ethic. She participates actively in class discussions and shows excellent understanding of complex concepts. She should continue to maintain her excellent performance and consider joining more extracurricular activities to develop her leadership skills.</div>
+</div>
+<div class="mt-2">
+<span class="font-medium">Name:</span>
+<span class="editable" contenteditable="true" data-placeholder="Teacher's Name">Mrs. Oluwakemi Adebayo</span>
+<span class="ml-4 font-medium">Signature:</span>
+<span class="editable" contenteditable="true" data-placeholder="Signature">_________________</span>
+</div>
+</div>
+<div>
+<h3 class="text-lg font-semibold mb-2">Principal's Comment:</h3>
+<div class="border border-gray-300 p-3 rounded min-h-16">
+<div class="editable" contenteditable="true" data-placeholder="Principal's Comment">Elizabeth has shown remarkable academic progress this term. Her consistent performance across all subjects is commendable. I encourage her to maintain this excellent standard and continue to develop her God-given talents. Keep up the good work!</div>
+</div>
+<div class="mt-2">
+<span class="font-medium">Name:</span>
+<span class="editable" contenteditable="true" data-placeholder="Principal's Name">Dr. Emmanuel Okonkwo</span>
+<span class="ml-4 font-medium">Signature:</span>
+<span class="editable" contenteditable="true" data-placeholder="Signature">_________________</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Footer Section -->
+<div class="border-t border-gray-200 pt-4">
+<div class="flex flex-wrap justify-between items-center">
+<div>
+<p class="font-medium">Next Term Begins:</p>
+<p class="editable" contenteditable="true" data-placeholder="Next Term Date">May 15, 2025</p>
+</div>
+<div class="text-right">
+<p class="font-medium">School Stamp</p>
+<div class="w-24 h-24 border border-dashed border-gray-300 rounded-full mx-auto mt-2 flex items-center justify-center text-gray-400">
+<div class="w-10 h-10 flex items-center justify-center">
+<i class="ri-stamp-line ri-2x"></i>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+// Load saved data from localStorage
+function loadSavedData() {
+  const savedData = localStorage.getItem('reportCardData');
+  if (savedData) {
+    const data = JSON.parse(savedData);
+    
+    // Restore editable content
+    document.querySelectorAll('.editable').forEach(el => {
+      const id = el.id || Array.from(el.parentElement.children).indexOf(el);
+      const path = getElementPath(el);
+      if (data.editableContent[path]) {
+        el.textContent = data.editableContent[path];
+      }
+    });
+
+    // Restore scores
+    document.querySelectorAll('.ca-score, .exam-score').forEach(input => {
+      const path = getElementPath(input);
+      if (data.scores[path]) {
+        input.value = data.scores[path];
+      }
+    });
+
+    // Restore settings
+    if (data.settings) {
+      document.getElementById('schoolNameInput').value = data.settings.schoolName || '';
+      document.getElementById('schoolMottoInput').value = data.settings.schoolMotto || '';
+      document.getElementById('termSelect').value = data.settings.term || 'First Term';
+      document.getElementById('academicYearSelect').value = data.settings.academicYear || '2024/2025';
+      document.getElementById('autoCalculate').checked = data.settings.autoCalculate !== false;
+      
+      if (data.settings.backgroundColor) {
+        document.getElementById('reportCardContainer').className = 'print-container rounded-lg shadow-lg overflow-hidden p-6 mb-10 ' + data.settings.backgroundColor;
+      }
+    }
+
+    calculateGrades();
+  }
+}
+
+// Save all changes to localStorage
+function saveAllChanges() {
+  const data = {
+    editableContent: {},
+    scores: {},
+    settings: {
+      schoolName: document.getElementById('schoolNameInput').value,
+      schoolMotto: document.getElementById('schoolMottoInput').value,
+      term: document.getElementById('termSelect').value,
+      academicYear: document.getElementById('academicYearSelect').value,
+      autoCalculate: document.getElementById('autoCalculate').checked,
+      backgroundColor: document.getElementById('reportCardContainer').className.split(' ').find(c => c.startsWith('bg-'))
+    }
+  };
+
+  // Save editable content
+  document.querySelectorAll('.editable').forEach(el => {
+    const path = getElementPath(el);
+    data.editableContent[path] = el.textContent;
+  });
+
+  // Save scores
+  document.querySelectorAll('.ca-score, .exam-score').forEach(input => {
+    const path = getElementPath(input);
+    data.scores[path] = input.value;
+  });
+
+  localStorage.setItem('reportCardData', JSON.stringify(data));
+}
+
+// Get unique path for element
+function getElementPath(el) {
+  let path = '';
+  let current = el;
+  while (current && current !== document.body) {
+    const parent = current.parentElement;
+    if (!parent) break;
+    const index = Array.from(parent.children).indexOf(current);
+    path = `${current.tagName}:${index}${path ? '>' + path : ''}`;
+    current = parent;
+  }
+  return path;
+}
+
+// Load saved data on initial load
+loadSavedData();
+// Set current date
+const currentDate = new Date();
+const options = { year: 'numeric', month: 'long', day: 'numeric' };
+document.getElementById('currentDate').textContent = currentDate.toLocaleDateString('en-US', options);
+// Initialize variables
+let gradeThresholds = {
+A: 80,
+B: 70,
+C: 60,
+D: 50,
+E: 40,
+F: 0
+};
+// Calculate grades and totals
+function calculateGrades() {
+if (!document.getElementById('autoCalculate').checked) return;
+const rows = document.querySelectorAll('#subjectsTableBody tr');
+let totalSum = 0;
+rows.forEach(row => {
+const caScore = parseFloat(row.querySelector('.ca-score').value) || 0;
+const examScore = parseFloat(row.querySelector('.exam-score').value) || 0;
+const totalScore = caScore + examScore;
+row.querySelector('.total-score').textContent = totalScore;
+// Determine grade
+let grade = 'F';
+if (totalScore >= gradeThresholds.A) grade = 'A';
+else if (totalScore >= gradeThresholds.B) grade = 'B';
+else if (totalScore >= gradeThresholds.C) grade = 'C';
+else if (totalScore >= gradeThresholds.D) grade = 'D';
+else if (totalScore >= gradeThresholds.E) grade = 'E';
+row.querySelector('.grade').textContent = grade;
+totalSum += totalScore;
+});
+// Update summary
+const totalSubjects = rows.length;
+document.getElementById('totalSubjects').textContent = totalSubjects;
+document.getElementById('totalScore').textContent = totalSum;
+}
+// Add event listeners to all score inputs
+document.querySelectorAll('.ca-score, .exam-score').forEach(input => {
+input.addEventListener('input', calculateGrades);
+});
+// Add subject button
+document.getElementById('addSubjectBtn').addEventListener('click', function() {
+const tbody = document.getElementById('subjectsTableBody');
+const newRow = document.createElement('tr');
+newRow.innerHTML = `
+<td class="border border-gray-300 px-4 py-2">
+<div class="editable" contenteditable="true" data-placeholder="Subject"></div>
+</td>
+<td class="border border-gray-300 px-4 py-2">
+<input type="number" class="ca-score w-full text-center bg-transparent" min="0" max="40" value="0">
+</td>
+<td class="border border-gray-300 px-4 py-2">
+<input type="number" class="exam-score w-full text-center bg-transparent" min="0" max="60" value="0">
+</td>
+<td class="border border-gray-300 px-4 py-2 text-center total-score">0</td>
+<td class="border border-gray-300 px-4 py-2 text-center grade">F</td>
+<td class="border border-gray-300 px-4 py-2">
+<div class="editable" contenteditable="true" data-placeholder="Remarks"></div>
+</td>
+`;
+tbody.appendChild(newRow);
+// Add event listeners to new inputs
+newRow.querySelectorAll('.ca-score, .exam-score').forEach(input => {
+input.addEventListener('input', calculateGrades);
+});
+calculateGrades();
+});
+// Reset form button
+document.getElementById('resetBtn').addEventListener('click', function() {
+if (confirm('Are you sure you want to reset the form? All data will be lost.')) {
+location.reload();
+}
+});
+// Print button
+document.getElementById('printBtn').addEventListener('click', function() {
+window.print();
+});
+// Settings modal
+const settingsModal = document.getElementById('settingsModal');
+document.getElementById('settingsBtn').addEventListener('click', function() {
+settingsModal.classList.remove('hidden');
+});
+document.getElementById('closeSettingsBtn').addEventListener('click', function() {
+settingsModal.classList.add('hidden');
+});
+// Upload logo
+document.getElementById('uploadLogoBtn').addEventListener('click', function() {
+document.getElementById('schoolLogoInput').click();
+});
+document.getElementById('schoolLogoInput').addEventListener('change', function(e) {
+if (e.target.files && e.target.files[0]) {
+const file = e.target.files[0];
+document.getElementById('logoFileName').textContent = file.name;
+const reader = new FileReader();
+reader.onload = function(event) {
+const schoolLogo = document.getElementById('schoolLogo');
+schoolLogo.innerHTML = '';
+schoolLogo.style.backgroundImage = `url(${event.target.result})`;
+schoolLogo.style.backgroundSize = 'cover';
+schoolLogo.style.backgroundPosition = 'center';
+};
+reader.readAsDataURL(file);
+}
+});
+// Save settings
+document.getElementById('saveSettingsBtn').addEventListener('click', function() {
+// Update school info
+document.getElementById('schoolName').textContent = document.getElementById('schoolNameInput').value;
+document.getElementById('schoolMotto').textContent = document.getElementById('schoolMottoInput').value;
+// Update grade thresholds
+gradeThresholds = {
+A: parseInt(document.getElementById('gradeAInput').value) || 80,
+B: parseInt(document.getElementById('gradeBInput').value) || 70,
+C: parseInt(document.getElementById('gradeCInput').value) || 60,
+D: parseInt(document.getElementById('gradeDInput').value) || 50,
+E: parseInt(document.getElementById('gradeEInput').value) || 40,
+F: parseInt(document.getElementById('gradeFInput').value) || 0
+};
+// Recalculate grades
+calculateGrades();
+// Close modal
+settingsModal.classList.add('hidden');
+});
+// Background color selection
+document.querySelectorAll('[data-color]').forEach(colorDiv => {
+colorDiv.addEventListener('click', function() {
+const color = this.getAttribute('data-color');
+document.getElementById('reportCardContainer').className = 'print-container rounded-lg shadow-lg overflow-hidden p-6 mb-10 ' + color;
+// Highlight selected color
+document.querySelectorAll('[data-color]').forEach(div => {
+div.classList.remove('ring-2', 'ring-primary');
+});
+this.classList.add('ring-2', 'ring-primary');
+});
+});
+// Term and academic year selection
+document.getElementById('termSelect').addEventListener('change', function() {
+document.getElementById('termDisplay').textContent = this.value;
+});
+document.getElementById('academicYearSelect').addEventListener('change', function() {
+document.getElementById('academicYearDisplay').textContent = this.value;
+});
+// Initial calculations
+calculateGrades();
+
+// Add event listeners for saving changes
+document.querySelectorAll('.editable').forEach(el => {
+  el.addEventListener('input', saveAllChanges);
+});
+
+document.querySelectorAll('.ca-score, .exam-score').forEach(input => {
+  input.addEventListener('change', saveAllChanges);
+});
+
+document.getElementById('saveBtn').addEventListener('click', () => {
+  saveAllChanges();
+  const notification = document.createElement('div');
+  notification.className = 'fixed bottom-4 right-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg z-50';
+  notification.textContent = 'Changes saved successfully!';
+  document.body.appendChild(notification);
+  setTimeout(() => notification.remove(), 3000);
+});
+
+// Save changes when settings are updated
+document.getElementById('saveSettingsBtn').addEventListener('click', saveAllChanges);
+document.getElementById('termSelect').addEventListener('change', saveAllChanges);
+document.getElementById('academicYearSelect').addEventListener('change', saveAllChanges);
+document.getElementById('autoCalculate').addEventListener('change', saveAllChanges);
+document.querySelectorAll('[data-color]').forEach(colorDiv => {
+  colorDiv.addEventListener('click', saveAllChanges);
+});
+
+});
+</script>
+</body>
+</html>
